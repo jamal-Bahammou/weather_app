@@ -7,6 +7,8 @@ import CitieWeatherDetail from './CitieWeatherDetail';
 import AddCitieWeather from './AddCitieWeather';
 import { fetchCity, fetchList } from '../actions';
 
+// Finishing the UI
+
 class App extends Component {
 	state = { load: true, lat: null, lon: null, errMessage: '' };
 	componentDidMount() {

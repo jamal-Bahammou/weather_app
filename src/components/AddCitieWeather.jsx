@@ -48,6 +48,7 @@ class AddCitieWeather extends Component {
 	}
 
 	render() {
+		const { load } = this.state.load;
 		return (
 			<div className='add-city open'>
 				<button className='close-popup animated fadeIn delay-1s'>
@@ -72,7 +73,25 @@ class AddCitieWeather extends Component {
 				<SearchBar onSubmit={this.onSearchSubmit} />
 
 				{/* SEARCH RESULT */}
-				<div className='search__results'>{this.renderList()}</div>
+				{!load && (
+					<div className='search__results'>{this.renderList()}</div>
+				)}
+
+				{/* {load && (
+							<div className='animated fadeIn'>
+								<div className='loader'>
+									<div className='one'></div>
+									<div className='two'></div>
+								</div>
+							</div>
+						)} */}
+				{/* {this.state.citys.length === 0 && !load && (
+					<div className='cities'>
+						<div className='error__message'>
+							We not found any citys with your search
+						</div>
+					</div>
+				)} */}
 			</div>
 		);
 	}

@@ -6,6 +6,14 @@ class CitieCard extends Component {
 
 		return (
 			<>
+				{load && (
+					<div className='main__weather animated fadeIn'>
+						<div className='loader'>
+							<div className='one'></div>
+							<div className='two'></div>
+						</div>
+					</div>
+				)}
 				{!load && (
 					<div className='main__weather animated fadeIn'>
 						<h2

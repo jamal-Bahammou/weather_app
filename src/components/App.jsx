@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Home from './Home';
 import CitieWeatherDetail from './CitieWeatherDetail';
 import AddCitieWeather from './AddCitieWeather';
-import { fetchCity, fetchList } from '../actions';
+import { fetchCity } from '../actions';
 
 class App extends Component {
 	constructor(props) {
@@ -17,7 +17,6 @@ class App extends Component {
 			CURRENT_LOCATION: null,
 			OTHER_LOCATION: [],
 			selected_city: { coord: { lon: -2.93, lat: 35.17 } },
-			list: null,
 			errMessage: ''
 		};
 	}
@@ -38,17 +37,10 @@ class App extends Component {
 		promise
 			.then(() => this.props.fetchCity(this.state.lat, this.state.lon))
 			.then(() =>
-				this.props.fetchList(
-					this.state.selected_city.coord.lat,
-					this.state.selected_city.coord.lon
-				)
-			)
-			.then(() =>
 				this.setState({
 					load: false,
 					CURRENT_LOCATION: this.props.city,
-					selected_city: this.props.city,
-					list: this.props.list
+					selected_city: this.props.city
 				})
 			)
 			.catch(() => console.log(this.state.errMessage));
@@ -84,18 +76,11 @@ class App extends Component {
 
 		promise
 			.then(() => this.props.fetchCity(city.lat, city.lon))
-			.then(() =>
-				this.props.fetchList(
-					this.state.city.coord.lat,
-					this.state.city.coord.lon
-				)
-			)
 			.then(() => {
 				this.setState({
 					load: false,
 					OTHER_LOCATION: [...this.state.OTHER_LOCATION, this.props.city],
-					selected_city: city,
-					list: this.props.list
+					selected_city: city
 				});
 				localStorage.setItem(
 					'OTHER_LOCATION',
@@ -142,7 +127,6 @@ class App extends Component {
 	}
 
 	render() {
-		console.log(this.state.list);
 		return (
 			<>
 				<Route
@@ -164,7 +148,6 @@ class App extends Component {
 						<CitieWeatherDetail
 							load={this.state.load}
 							selected_city={this.state.selected_city}
-							list={this.state.list}
 							CURRENT_LOCATION={this.state.CURRENT_LOCATION}
 							deleteAllLocations={this.deleteAllLocations.bind(this)}
 							deleteIndCity={this.deleteIndCity.bind(this)}
@@ -185,10 +168,10 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-	return { city: state.city, list: state.list };
+	return { city: state.city };
 };
 
 export default connect(
 	mapStateToProps,
-	{ fetchCity, fetchList }
+	{ fetchCity }
 )(App);

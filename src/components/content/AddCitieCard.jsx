@@ -6,6 +6,14 @@ class AddCitieCard extends Component {
 
 		return (
 			<>
+				{load && (
+					<div className='cities__weather__name animated fadeIn'>
+						<div className='loader'>
+							<div className='one'></div>
+							<div className='two'></div>
+						</div>
+					</div>
+				)}
 				{!load && (
 					<>
 						<div className='cities__weather__name animated fadeIn'>

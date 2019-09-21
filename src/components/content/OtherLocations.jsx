@@ -8,19 +8,12 @@ class OtherLocations extends Component {
 		super(props);
 		this.state = {
 			load: null,
-			OTHER_LOCATION: [],
 			selected_city: null
 		};
 	}
 
-	componentDidMount() {
-		this.setState({
-			OTHER_LOCATION: this.props.OTHER_LOCATION
-		});
-	}
-
 	renderList() {
-		return this.state.OTHER_LOCATION.map(city => {
+		return this.props.OTHER_LOCATION.map(city => {
 			return (
 				<Link
 					key={city.id}

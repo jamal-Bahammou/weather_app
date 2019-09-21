@@ -11,8 +11,8 @@ class CitieWetherDetail extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			load: null,
-			OTHER_LOCATION: []
+			load: true,
+			list: []
 		};
 	}
 
@@ -38,39 +38,24 @@ class CitieWetherDetail extends Component {
 			)
 			.then(() =>
 				this.setState({
-					load: false,
-					CURRENT_LOCATION: this.props.city,
-					list: this.props.list
+					list: this.props.list,
+					load: false
 				})
 			)
 			.catch(() => console.log(this.state.errMessage));
-
-		// LOCAL STORAGE SETUP
-		// Test if localStorage is null
-		if (localStorage.getItem('OTHER_LOCATION') === null) {
-			// Set to localStorage
-			localStorage.setItem(
-				'OTHER_LOCATION',
-				JSON.stringify(this.state.OTHER_LOCATION)
-			);
-		} else {
-			// Get bookmarks from localStorage
-			this.setState({
-				OTHER_LOCATION: JSON.parse(localStorage.getItem('OTHER_LOCATION'))
-			});
-		}
 	}
 
 	renderList() {
-		return this.props.list.map(day => {
+		return this.state.list.map(day => {
 			return (
-				<DayWetherDetail key={uuid()} load={this.props.load} day={day} />
+				<DayWetherDetail key={uuid()} load={this.state.load} day={day} />
 			);
 		});
 	}
 
 	render() {
-		const { load, selected_city } = this.props;
+		const { load } = this.state;
+		const { selected_city, CURRENT_LOCATION } = this.props;
 		return (
 			<div className='forecast open'>
 				<button className='close-popup animated fadeIn delay-1s'>
@@ -87,7 +72,7 @@ class CitieWetherDetail extends Component {
 					</h1>
 				</div>
 
-				{!(this.props.CURRENT_LOCATION === selected_city) && (
+				{!(CURRENT_LOCATION === selected_city) && (
 					<button
 						onClick={() => this.props.deleteIndCity(selected_city)}
 						className='remove animated fadeIn delay-1s'
@@ -108,14 +93,16 @@ class CitieWetherDetail extends Component {
 				<div className='title__text--subtitle animated fadeIn'>
 					Forecast for the next 5 days
 				</div>
-				{/* {load && (
-					<div className='main__weather animated fadeIn'>
-						<div className='loader'>
-							<div className='one'></div>
-							<div className='two'></div>
+				{load && (
+					<div className='days'>
+						<div className='cities__weather animated fadeIn'>
+							<div className='loader'>
+								<div className='one'></div>
+								<div className='two'></div>
+							</div>
 						</div>
 					</div>
-				)} */}
+				)}
 				{this.renderList()}
 			</div>
 		);

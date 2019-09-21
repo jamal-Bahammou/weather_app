@@ -46,15 +46,12 @@ class App extends Component {
 			.catch(() => console.log(this.state.errMessage));
 
 		// LOCAL STORAGE SETUP
-		// Test if localStorage is null
 		if (localStorage.getItem('OTHER_LOCATION') === null) {
-			// Set to localStorage
 			localStorage.setItem(
 				'OTHER_LOCATION',
 				JSON.stringify(this.state.OTHER_LOCATION)
 			);
 		} else {
-			// Get bookmarks from localStorage
 			this.setState({
 				OTHER_LOCATION: JSON.parse(localStorage.getItem('OTHER_LOCATION'))
 			});
@@ -146,7 +143,6 @@ class App extends Component {
 					path='/detail'
 					component={() => (
 						<CitieWeatherDetail
-							load={this.state.load}
 							selected_city={this.state.selected_city}
 							CURRENT_LOCATION={this.state.CURRENT_LOCATION}
 							deleteAllLocations={this.deleteAllLocations.bind(this)}

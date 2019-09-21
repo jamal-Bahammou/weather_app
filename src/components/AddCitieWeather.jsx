@@ -9,10 +9,11 @@ import SearchResultCard from './content/SearchResultCard';
 class AddCitieWeather extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { citys: [], load: true };
+		this.state = { citys: [], load: null, not_found: false };
 	}
 
 	onSearchSubmit = async term => {
+		await this.setState({ load: true });
 		const response = await RapidAPI.get(
 			`https://devru-latitude-longitude-find-v1.p.rapidapi.com/latlon.php?location=${term}`,
 			{
@@ -27,7 +28,11 @@ class AddCitieWeather extends Component {
 			}
 		);
 
-		this.setState({ citys: response.data.Results, load: false });
+		this.setState({
+			citys: response.data.Results,
+			load: false,
+			not_found: true
+		});
 	};
 
 	renderList() {
@@ -48,7 +53,7 @@ class AddCitieWeather extends Component {
 	}
 
 	render() {
-		const { load } = this.state.load;
+		const { load, not_found } = this.state;
 		return (
 			<div className='add-city open'>
 				<button className='close-popup animated fadeIn delay-1s'>
@@ -73,25 +78,26 @@ class AddCitieWeather extends Component {
 				<SearchBar onSubmit={this.onSearchSubmit} />
 
 				{/* SEARCH RESULT */}
-				{!load && (
-					<div className='search__results'>{this.renderList()}</div>
+				{load && (
+					<div className='animated fadeIn'>
+						<div className='loader'>
+							<div className='one'></div>
+							<div className='two'></div>
+						</div>
+					</div>
 				)}
 
-				{/* {load && (
-							<div className='animated fadeIn'>
-								<div className='loader'>
-									<div className='one'></div>
-									<div className='two'></div>
-								</div>
-							</div>
-						)} */}
-				{/* {this.state.citys.length === 0 && !load && (
+				{this.state.citys.length === 0 && not_found && (
 					<div className='cities'>
 						<div className='error__message'>
 							We not found any citys with your search
 						</div>
 					</div>
-				)} */}
+				)}
+
+				{!load && (
+					<div className='search__results'>{this.renderList()}</div>
+				)}
 			</div>
 		);
 	}

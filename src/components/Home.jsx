@@ -26,6 +26,7 @@ class Home extends Component {
 					load={load}
 					OTHER_LOCATION={OTHER_LOCATION}
 					getSelectedCity={this.props.getSelectedCity.bind(this)}
+					deleteAllLocations={this.props.deleteAllLocations.bind(this)}
 				/>
 			</>
 		);

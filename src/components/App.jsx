@@ -16,11 +16,13 @@ class App extends Component {
 			lon: null,
 			CURRENT_LOCATION: null,
 			OTHER_LOCATION: [],
-			selected_city: null,
+			selected_city: { coord: { lon: -2.93, lat: 35.17 } },
+			list: null,
 			errMessage: ''
 		};
 	}
 
+	// FUNCTION TO RUN WENT THE COMPONENT START ------------------------------------------
 	componentDidMount() {
 		var promise = fetch(
 			window.navigator.geolocation.getCurrentPosition(
@@ -36,17 +38,39 @@ class App extends Component {
 		promise
 			.then(() => this.props.fetchCity(this.state.lat, this.state.lon))
 			.then(() =>
+				this.props.fetchList(
+					this.state.selected_city.coord.lat,
+					this.state.selected_city.coord.lon
+				)
+			)
+			.then(() =>
 				this.setState({
 					load: false,
 					CURRENT_LOCATION: this.props.city,
-					selected_city: this.props.city
+					selected_city: this.props.city,
+					list: this.props.list
 				})
 			)
 			.catch(() => console.log(this.state.errMessage));
+
+		// LOCAL STORAGE SETUP
+		// Test if localStorage is null
+		if (localStorage.getItem('OTHER_LOCATION') === null) {
+			// Set to localStorage
+			localStorage.setItem(
+				'OTHER_LOCATION',
+				JSON.stringify(this.state.OTHER_LOCATION)
+			);
+		} else {
+			// Get bookmarks from localStorage
+			this.setState({
+				OTHER_LOCATION: JSON.parse(localStorage.getItem('OTHER_LOCATION'))
+			});
+		}
 	}
 
-	// FUNCTION TO START THE API
-	startFunctionAPI(city) {
+	// FUNCTION TO START THE API ---------------------------------------------------------
+	startFunctionCityAPI(city) {
 		var promise = fetch(
 			window.navigator.geolocation.getCurrentPosition(
 				position =>
@@ -61,21 +85,32 @@ class App extends Component {
 		promise
 			.then(() => this.props.fetchCity(city.lat, city.lon))
 			.then(() =>
+				this.props.fetchList(
+					this.state.city.coord.lat,
+					this.state.city.coord.lon
+				)
+			)
+			.then(() => {
 				this.setState({
 					load: false,
 					OTHER_LOCATION: [...this.state.OTHER_LOCATION, this.props.city],
-					selected_city: city
-				})
-			)
+					selected_city: city,
+					list: this.props.list
+				});
+				localStorage.setItem(
+					'OTHER_LOCATION',
+					JSON.stringify(this.state.OTHER_LOCATION)
+				);
+			})
 			.catch(() => console.log(this.state.errMessage));
 	}
 
-	// GET THE GEO OF THE NEW CITY TO ADD
+	// ️☀️️☀️️ ADD CITY TO OTHER LOCATION GET THE GEO OF THE NEW CITY TO ADD ---------------
 	getGeolocation(city) {
-		this.startFunctionAPI(city);
+		this.startFunctionCityAPI(city);
 	}
 
-	// GET THE SELECTED CITY
+	// ☀️☀️️ GET THE SELECTED CITY -------------------------------------------------------
 	getSelectedCity(city) {
 		this.setState({
 			load: false,
@@ -83,7 +118,31 @@ class App extends Component {
 		});
 	}
 
+	// 🛑🛑 DELETE TEH LIST OF CITYS -----------------------------------------------------
+	deleteAllLocations() {
+		this.setState({
+			OTHER_LOCATION: []
+		});
+		localStorage.setItem('OTHER_LOCATION', JSON.stringify([]));
+	}
+
+	// 🛑🛑 DELETE A CITY FROM LIST OF CITYS ---------------------------------------------
+	deleteIndCity(city) {
+		this.setState({
+			OTHER_LOCATION: this.state.OTHER_LOCATION.filter(
+				location => location !== city
+			)
+		});
+		localStorage.setItem(
+			'OTHER_LOCATION',
+			JSON.stringify(
+				this.state.OTHER_LOCATION.filter(location => location !== city)
+			)
+		);
+	}
+
 	render() {
+		console.log(this.state.list);
 		return (
 			<>
 				<Route
@@ -95,6 +154,7 @@ class App extends Component {
 							CURRENT_LOCATION={this.state.CURRENT_LOCATION}
 							OTHER_LOCATION={this.state.OTHER_LOCATION}
 							getSelectedCity={this.getSelectedCity.bind(this)}
+							deleteAllLocations={this.deleteAllLocations.bind(this)}
 						/>
 					)}
 				/>
@@ -103,7 +163,11 @@ class App extends Component {
 					component={() => (
 						<CitieWeatherDetail
 							load={this.state.load}
-							city={this.state.selected_city}
+							selected_city={this.state.selected_city}
+							list={this.state.list}
+							CURRENT_LOCATION={this.state.CURRENT_LOCATION}
+							deleteAllLocations={this.deleteAllLocations.bind(this)}
+							deleteIndCity={this.deleteIndCity.bind(this)}
 						/>
 					)}
 				/>

@@ -1,0 +1,3 @@
+🥉 RapidAPI: params a name of city get a list of citys for your search.
+🥈 fetchCity: params lat and lon and get the current weather
+🥇 fetchList: params lat and lon and get the 5 days weather

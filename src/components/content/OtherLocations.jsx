@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import CitieCard from './CitieCard';
+import AddCitieCard from './AddCitieCard';
 
 class OtherLocations extends Component {
 	constructor(props) {
@@ -9,8 +9,7 @@ class OtherLocations extends Component {
 		this.state = {
 			load: null,
 			OTHER_LOCATION: [],
-			selected_city: null,
-			selected_list: null
+			selected_city: null
 		};
 	}
 
@@ -31,15 +30,11 @@ class OtherLocations extends Component {
 						this.props.getSelectedCity(city);
 					}}
 				>
-					<CitieCard load={this.props.load} city={city} />
+					<div className='cities__weather animated fadeIn noselect'>
+						<AddCitieCard load={this.props.load} city={city} />
+					</div>
 				</Link>
 			);
-		});
-	}
-
-	deleteLocations() {
-		this.setState({
-			OTHER_LOCATION: []
 		});
 	}
 
@@ -55,7 +50,7 @@ class OtherLocations extends Component {
 				</div>
 
 				{/* LIST OF THE OTHER LOCATION  */}
-				{this.renderList()}
+				<div className='cities'>{this.renderList()}</div>
 
 				{this.props.OTHER_LOCATION.length < 1 ? (
 					<div className='cities'>
@@ -66,7 +61,7 @@ class OtherLocations extends Component {
 					</div>
 				) : (
 					<button
-						onClick={() => this.deleteLocations()}
+						onClick={() => this.props.deleteAllLocations()}
 						className='remove remove__all animated fadeIn delay-1s'
 					>
 						Remove all Locations

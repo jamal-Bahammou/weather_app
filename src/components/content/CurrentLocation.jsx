@@ -9,8 +9,7 @@ class CurrentLocation extends Component {
 		this.state = {
 			load: null,
 			OTHER_LOCATION: [],
-			selected_city: null,
-			selected_list: null
+			selected_city: null
 		};
 	}
 

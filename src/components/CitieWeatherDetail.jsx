@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
 import uuid from 'uuid/v4';
 
 import DayWetherDetail from './content/DayWetherDetail';
 import CitieCard from './content/CitieCard';
-import { fetchList } from '../actions';
 
 class CitieWetherDetail extends Component {
-	state = { list: null };
-
-	componentDidMount() {
-		this.props.fetchList(
-			this.props.city.coord.lat,
-			this.props.city.coord.lon
-		);
-		this.setState({ list: this.props.list });
+	constructor(props) {
+		super(props);
+		this.state = {
+			load: null,
+			OTHER_LOCATION: []
+		};
 	}
+
 	renderList() {
 		return this.props.list.map(day => {
 			return (
@@ -26,7 +23,7 @@ class CitieWetherDetail extends Component {
 	}
 
 	render() {
-		const { load, city } = this.props;
+		const { load, selected_city } = this.props;
 		return (
 			<div className='forecast open'>
 				<button className='close-popup animated fadeIn delay-1s'>
@@ -40,7 +37,24 @@ class CitieWetherDetail extends Component {
 					</h1>
 				</div>
 
-				<CitieCard load={load} city={city} />
+				{!(this.props.CURRENT_LOCATION === selected_city) && (
+					<button
+						onClick={() => this.props.deleteIndCity(selected_city)}
+						className='remove animated fadeIn delay-1s'
+					>
+						<Link
+							to='/'
+							style={{ textDecoration: 'none', color: 'white' }}
+						>
+							Remove from Saved
+						</Link>
+					</button>
+				)}
+
+				<div className='current noselect'>
+					<CitieCard load={load} city={selected_city} />
+				</div>
+
 				<div className='title__text--subtitle animated fadeIn'>
 					Forecast for the next 5 days
 				</div>
@@ -50,11 +64,4 @@ class CitieWetherDetail extends Component {
 	}
 }
 
-const mapStateToProps = state => {
-	return { list: state.list };
-};
-
-export default connect(
-	mapStateToProps,
-	{ fetchList }
-)(CitieWetherDetail);
+export default CitieWetherDetail;
